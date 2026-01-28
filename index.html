@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Family Expense Tracker</title>
+  <title>ExpenseMate</title>
 
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
   <meta name="theme-color" content="#4a90e2">
-  
+
   <style>
     :root {
       --primary-color: #4a90e2;
@@ -94,17 +94,15 @@
 <body>
 
 <div class="container">
-  <h2>💰 Expense Tracker</h2>
+  <h2>💰 ExpenseMate</h2>
 
   <form id="expenseForm">
 
-    <!-- DATE -->
     <div class="form-group">
       <label>Date</label>
       <input type="date" id="date" required>
     </div>
 
-    <!-- TYPE -->
     <div class="form-group">
       <label>Transaction Type</label>
       <select id="type" onchange="toggleFields()" required>
@@ -118,11 +116,11 @@
     <div id="givenFields" class="fade-slide">
       <div class="form-group">
         <label>Person Name</label>
-        <input type="text" id="person" placeholder="Given to whom?">
+        <input type="text" id="person">
       </div>
       <div class="form-group">
         <label>Reason</label>
-        <input type="text" id="reasonGiven" placeholder="Purpose of giving money">
+        <input type="text" id="reasonGiven">
       </div>
     </div>
 
@@ -142,6 +140,12 @@
           <option>Travelling</option>
           <option>Repairing</option>
           <option>Transporting Items</option>
+
+          <!-- NEW CATEGORIES -->
+          <option>Recharge</option>
+          <option>Bills</option>
+          <option>Other</option>
+
           <option value="buy_new">Buying Something New</option>
           <option value="building">Buying Something for Building</option>
         </select>
@@ -175,18 +179,17 @@
 
       <div class="form-group">
         <label>Reason</label>
-        <input type="text" id="reasonSpent" placeholder="Purpose of spending">
+        <input type="text" id="reasonSpent">
       </div>
 
     </div>
 
-    <!-- AMOUNT -->
     <div class="form-group">
       <label>Amount (₹)</label>
       <input type="number" id="amount" required>
     </div>
 
-    <button type="submit" id="submitBtn">Save Transaction</button>
+    <button type="submit">Save Transaction</button>
 
   </form>
 </div>
@@ -194,17 +197,17 @@
 <script>
 function toggleFields() {
   const type = document.getElementById("type").value;
-  document.getElementById("givenFields").style.display = type === "Given" ? "block" : "none";
-  document.getElementById("spentFields").style.display = type === "Spent" ? "block" : "none";
+  givenFields.style.display = type === "Given" ? "block" : "none";
+  spentFields.style.display = type === "Spent" ? "block" : "none";
 }
 
 function toggleSubCategory() {
-  const cat = document.getElementById("category").value;
-  document.getElementById("buyNewBox").style.display = cat === "buy_new" ? "block" : "none";
-  document.getElementById("buildingBox").style.display = cat === "building" ? "block" : "none";
+  const cat = category.value;
+  buyNewBox.style.display = cat === "buy_new" ? "block" : "none";
+  buildingBox.style.display = cat === "building" ? "block" : "none";
 }
 
-document.getElementById("expenseForm").addEventListener("submit", function(e){
+expenseForm.addEventListener("submit", function(e){
   e.preventDefault();
 
   const data = {
