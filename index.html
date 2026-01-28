@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ExpenseMate | The Ultimate Ledger</title>
-    <link rel="icon" href="icon.png" type="image/png">
+      <link rel="icon" href="icon.png" type="image/png">
 
 <link rel="apple-touch-icon" href="icon.png">
 
 <meta name="theme-color" content="#4a90e2">
-  
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   
   <style>
@@ -330,18 +329,18 @@
         <div id="sectionGiven" class="dynamic-section">
           <div class="form-group">
             <label>Recipient Name</label>
-            <input type="text" id="personName" placeholder="Who did you give to?">
+            <input type="text" id="personName" placeholder="Who did you give to?" required>
           </div>
           <div class="form-group">
             <label>Specific Reason</label>
-            <input type="text" id="givenNote" placeholder="e.g. For lunch, Advance, etc.">
+            <input type="text" id="givenNote" placeholder="e.g. For lunch, Advance, etc." required>
           </div>
         </div>
 
         <div id="sectionSpent" class="dynamic-section">
           <div class="form-group">
             <label>Category</label>
-            <select id="mainCategory" onchange="handleCategoryChange()">
+            <select id="mainCategory" onchange="handleCategoryChange()" required>
               <option value="">Select Category...</option>
               <option>Petrol / Diesel</option>
               <option>Home Food</option>
@@ -363,7 +362,7 @@
           <div id="subBuyNew" class="dynamic-section">
             <div class="form-group">
               <label>What did you buy?</label>
-              <select id="buyNewType">
+              <select id="buyNewType" required>
                 <option value="">Select Item...</option>
                 <option>Electronic Product</option>
                 <option>Vehicle</option>
@@ -375,7 +374,7 @@
           <div id="subBuilding" class="dynamic-section">
             <div class="form-group">
               <label>Material Type</label>
-              <select id="buildingType">
+              <select id="buildingType" required>
                 <option value="">Select Material...</option>
                 <option>Bricks</option>
                 <option>Cement</option>
@@ -387,7 +386,7 @@
 
           <div class="form-group">
             <label>Expense Detail</label>
-            <input type="text" id="spentNote" placeholder="Additional details...">
+            <input type="text" id="spentNote" placeholder="Additional details..." required>
           </div>
         </div>
 
@@ -414,7 +413,18 @@
     // 1. Initial Setup
     window.onload = () => {
       document.getElementById('mainDate').valueAsDate = new Date();
+      // Ensure hidden required fields don't block form on load
+      toggleRequired('sectionGiven', false);
+      toggleRequired('sectionSpent', false);
+      toggleRequired('subBuyNew', false);
+      toggleRequired('subBuilding', false);
     };
+
+    // Helper function to toggle 'required' based on visibility
+    function toggleRequired(parentId, isRequired) {
+      const fields = document.getElementById(parentId).querySelectorAll('input, select');
+      fields.forEach(f => { f.required = isRequired; });
+    }
 
     // 2. Currency Switcher
     function setCurrency(code, symbol) {
@@ -436,18 +446,33 @@
 
       givenSec.classList.toggle('active', type === 'Given');
       spentSec.classList.toggle('active', type === 'Spent');
+
+      // Update required attributes
+      toggleRequired('sectionGiven', type === 'Given');
+      toggleRequired('sectionSpent', type === 'Spent');
       
       // Reset sub-sections when type changes
       if(type !== 'Spent') {
         document.getElementById('subBuyNew').classList.remove('active');
         document.getElementById('subBuilding').classList.remove('active');
+        toggleRequired('subBuyNew', false);
+        toggleRequired('subBuilding', false);
+      } else {
+          // Trigger category check to set correct sub-requireds if "Spent" is re-selected
+          handleCategoryChange();
       }
     }
 
     function handleCategoryChange() {
       const cat = document.getElementById('mainCategory').value;
-      document.getElementById('subBuyNew').classList.toggle('active', cat === 'buy_new');
-      document.getElementById('subBuilding').classList.toggle('active', cat === 'building');
+      const buyNew = document.getElementById('subBuyNew');
+      const building = document.getElementById('subBuilding');
+
+      buyNew.classList.toggle('active', cat === 'buy_new');
+      building.classList.toggle('active', cat === 'building');
+
+      toggleRequired('subBuyNew', cat === 'buy_new');
+      toggleRequired('subBuilding', cat === 'building');
     }
 
     // 4. Form Submission
@@ -510,4 +535,3 @@
   </script>
 </body>
 </html>
-
